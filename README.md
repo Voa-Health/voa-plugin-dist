@@ -1,49 +1,78 @@
 # voa-plugin-dist
 
-Public distribution repository for the **Voa** clinical documentation plugin
-(`plugin.js`). This repo holds only the built artifact — the source lives in the
-private [`Voa-Health/voa-integrations`](https://github.com/Voa-Health/voa-integrations)
-repository and is automatically published here on every release.
+Repositório público para disponibilização do script do **plugin Voa** (`plugin.js`) para colocar no seu prontuário ou sistema web.
 
-## Usage
+> Caso precise reportar erros ou solicitar features entre em contato com o suporte: https://crm.voa.health/enterprise
 
-Include the plugin in your EHR / host application via [jsDelivr](https://www.jsdelivr.com/):
+---
 
-### Pinned version (recommended for production)
+## O que tem neste repositório?
 
-```html
-<script src="https://cdn.jsdelivr.net/gh/Voa-Health/voa-plugin-dist@vX.Y.Z/plugin.js"></script>
-```
 
-Replace `vX.Y.Z` with a concrete version from the
-[Releases page](https://github.com/Voa-Health/voa-plugin-dist/releases). Pinned
-URLs are immutable and aggressively cached by jsDelivr.
+| Arquivo      | O que é                                      |
+| ------------ | -------------------------------------------- |
+| `plugin.js`  | Plugin Voa compilado, pronto para `<script>` |
 
-### Latest version (development / staging)
+Cada **release** (tag `vX.Y.Z`) traz uma versão nova desse arquivo. A página de [Releases](https://github.com/Voa-Health/voa-plugin-dist/releases) funciona como **changelog público** do plugin.
+
+---
+
+## Como usar (jsDelivr)
+
+O jeito mais simples é carregar o script pelo [jsDelivr](https://www.jsdelivr.com/), um CDN gratuito que serve arquivos do GitHub.
+
+### Recomendado: `@latest` (sempre a versão mais recente)
+
+É recomendado que utilize sempre que possível a versão `@latest` para receber automaticamente correções e novas funcionalidades.
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/Voa-Health/voa-plugin-dist@latest/plugin.js"></script>
 ```
 
-`@latest` resolves to the current `main` branch HEAD. jsDelivr revalidates this
-URL periodically (up to ~12 hours of caching). **Use a pinned version in
-production** to avoid unexpected updates and to ensure deterministic behavior.
+> O jsDelivr pode cachear `@latest` por algumas horas.
 
-## Changelog
+### Versão fixa (`@vX.Y.Z`)
 
-This repository's [Releases page](https://github.com/Voa-Health/voa-plugin-dist/releases)
-is the **public changelog** for the Voa plugin. Each release corresponds to a
-`voa-integrations` version and documents the changes shipped in that `plugin.js`.
+Caso precise, você também pode apontar para uma versão específica.
+Neste caso, lembre-se de acompanhar nossa página de [Releases](https://github.com/Voa-Health/voa-plugin-dist/releases) para manter sua versão atualizada.
 
-## Integration documentation
+```html
+<script src="https://cdn.jsdelivr.net/gh/Voa-Health/voa-plugin-dist@v2.4.0/plugin.js"></script>
+```
 
-Full integration docs — installation, configuration, events, structured output,
-and model selection — live at
-[docs.voa.health](https://docs.voa.health) (plugin section).
+Troque `v2.4.0` pela versão desejada e disponível em uma tag que exista na [página de Releases](https://github.com/Voa-Health/voa-plugin-dist/releases).
 
-## License & support
+Para manter atualizado automaticamente, prefira utilizar a versão `@latest`.
 
-This distribution is provided by [Voa Health](https://voa.health). For
-integration support or to report issues, please contact your Voa account manager
-or open a ticket at the relevant support channel. Issues in this repository are
-not monitored — the source is private.
+---
+
+## Passo a passo
+
+1. **Copie** a linha `<script>` acima (`@latest`) para o HTML do seu sistema (ou template do EHR), antes do `</body>` ou onde sua equipe costuma colocar scripts de terceiros.
+2. **Implemente sua integração** segundo a [documentação do plugin](https://docs.voa.health/integracao/plugin).
+3. **Abra o prontuário** no navegador e confira se o plugin Voa aparece (barra/flutuante conforme a integração).
+4. Se algo quebrar, abra o **Console** do navegador (F12 → Console) e veja erros de rede ou JavaScript.
+5. Para documentação completa (eventos, configuração, etc.), use [docs.voa.health](https://docs.voa.health) (seção "plugin").
+
+---
+
+## Perguntas frequentes
+
+### Preciso clonar este repositório?
+
+Não. Basta usar a URL do jsDelivr no seu HTML.
+
+### Onde vejo o que mudou em cada versão?
+
+[Releases do voa-plugin-dist](https://github.com/Voa-Health/voa-plugin-dist/releases).
+
+### Como conseguir suporte?
+
+Para suporte, fale o suporte acordado no seu contrato ou em https://crm.voa.health/enterprise.
+
+---
+
+## Licença e suporte
+
+Distribuição fornecida pela [Voa Health](https://voa.health).
+Para suporte acesse: https://crm.voa.health/enterprise
