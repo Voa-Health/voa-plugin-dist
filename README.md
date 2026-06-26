@@ -17,21 +17,22 @@ Cada **release** (tag `vX.Y.Z`) traz uma versão nova desse arquivo. A página d
 
 ---
 
-## Como usar (jsDelivr)
+## Como usar
 
-O jeito mais simples é carregar o script pelo [jsDelivr](https://www.jsdelivr.com/), um CDN gratuito que serve arquivos do GitHub.
+**Recomendado:** O jeito mais simples é carregar o script distribuido pela Voa em https://integration.voa.health/plugin.js.
 
-### Recomendado: `@latest` (sempre a versão mais recente)
+```html
+<script src="https://integration.voa.health/plugin.js"></script>
+```
 
-É recomendado que utilize sempre que possível a versão `@latest` para receber automaticamente correções e novas funcionalidades.
+Ou via [jsDelivr](https://www.jsdelivr.com/), um CDN gratuito que serve arquivos do GitHub. 
+Neste caso, é recomendado que utilize sempre que possível a versão `@latest` para receber automaticamente correções e novas funcionalidades.
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/Voa-Health/voa-plugin-dist@latest/plugin.js"></script>
 ```
 
 > O jsDelivr pode cachear `@latest` por algumas horas.
-
-### Versão fixa (`@vX.Y.Z`)
 
 Caso precise, você também pode apontar para uma versão específica.
 Neste caso, lembre-se de acompanhar nossa página de [Releases](https://github.com/Voa-Health/voa-plugin-dist/releases) para manter sua versão atualizada.
@@ -48,11 +49,11 @@ Para manter atualizado automaticamente, prefira utilizar a versão `@latest`.
 
 ## Passo a passo
 
-1. **Copie** a linha `<script>` acima (`@latest`) para o HTML do seu sistema (ou template do EHR), antes do `</body>` ou onde sua equipe costuma colocar scripts de terceiros.
+1. **Copie** a linha `<script>` acima para o HTML do seu sistema (ou template do EHR), antes do `</body>` ou onde sua equipe costuma colocar scripts de terceiros.
 2. **Implemente sua integração** segundo a [documentação do plugin](https://docs.voa.health/integracao/plugin).
 3. **Abra o prontuário** no navegador e confira se o plugin Voa aparece (barra/flutuante conforme a integração).
-4. Se algo quebrar, abra o **Console** do navegador (F12 → Console) e veja erros de rede ou JavaScript.
-5. Para documentação completa (eventos, configuração, etc.), use [docs.voa.health](https://docs.voa.health) (seção "plugin").
+4. Para documentação completa (eventos, configuração, etc.), use [docs.voa.health](https://docs.voa.health) (seção "plugin").
+5. Para suporte acesse: https://crm.voa.health/enterprise
 
 ---
 
