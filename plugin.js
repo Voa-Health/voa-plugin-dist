@@ -70924,7 +70924,7 @@ const persistDoctorExchangeResponse = (ys) => {
 };
 async function persistBearerAuthForExtensionRuntime(ys) {
 }
-const appVersion = "2.4.2", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (ys) => {
+const appVersion = "2.4.3", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (ys) => {
   ys && (apiInstance.defaults.headers.common["x-vercel-protection-bypass"] = ys, authInstance.defaults.headers.common["x-vercel-protection-bypass"] = ys, apiInstance.defaults.params = { ...apiInstance.defaults.params, "x-vercel-protection-bypass": ys }, authInstance.defaults.params = { ...authInstance.defaults.params, "x-vercel-protection-bypass": ys });
 }, logout = async () => {
   clearDoctorExchangeResponse(), useAuthStore.getState().reset();
@@ -161049,9 +161049,9 @@ function ModelSelectionModalHeader() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Flex, { justify: "space-between", align: "center", style: HEADER_CONTAINER_STYLE, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Typography.Title, { level: 4, style: { ...TITLE_MARGIN_ZERO_STYLE, textAlign: ys ? "center" : "left" }, children: "Modelos de documento" }) });
 }
 function ModelSelectionModalContent() {
-  const ys = useModelSelectionModalStore((_l) => _l.open), yl = useModelSelectionModalStore((_l) => _l.setOpen), { token: $l } = theme.useToken(), xl = Grid.useBreakpoint(), { generalMobile: Sl } = useScreens(), El = xl.xl ? 1e3 : xl.lg ? 860 : xl.md ? 640 : 480, Cl = getModelSelectionConfig().zIndex, wl = reactExports.useCallback(() => {
+  const ys = useModelSelectionModalStore((Ml) => Ml.open), yl = useModelSelectionModalStore((Ml) => Ml.setOpen), { token: $l } = theme.useToken(), xl = Grid.useBreakpoint(), { generalMobile: Sl } = useScreens(), El = xl.xl ? 1e3 : xl.lg ? 860 : xl.md ? 640 : 480, { zIndex: Cl, getContainer: wl } = getModelSelectionConfig(), Tl = reactExports.useCallback(() => {
     yl(!1);
-  }, [yl]), Tl = reactExports.useMemo(
+  }, [yl]), _l = reactExports.useMemo(
     () => ({
       header: {
         paddingTop: $l.paddingSM,
@@ -161077,12 +161077,13 @@ function ModelSelectionModalContent() {
     {
       title: /* @__PURE__ */ jsxRuntimeExports.jsx(ModelSelectionModalHeader, {}),
       open: ys,
-      onCancel: wl,
+      onCancel: Tl,
       closable: !0,
       footer: /* @__PURE__ */ jsxRuntimeExports.jsx(ModelSelectionModalFooter, {}),
       width: El,
-      styles: Tl,
+      styles: _l,
       zIndex: Cl,
+      getContainer: wl,
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(ModelSelectionModalBody, {})
     }
   );
@@ -175562,6 +175563,9 @@ function useVoaEditorContext() {
     throw new Error("useVoaEditorContext must be used within a VoaEditorProvider");
   return ys;
 }
+function useVoaEditorContextOptional() {
+  return reactExports.useContext(VoaEditorContext);
+}
 function VoaEditorProvider({
   children: ys,
   ehrid: yl,
@@ -175621,16 +175625,17 @@ const historiaLoadingLead = /* @__PURE__ */ jsxRuntimeExports.jsx(Flex, { align:
     label: "Falha"
   }
 }, SUBTITLE_FALLBACK = "Resumo clínico do paciente", SUBTITLE_LOADING = "Gerando conteúdo...", HistoriaPregressaComponent = ({ selected: ys, deleteNode: yl, editor: $l, getPos: xl }) => {
-  const { modal: Sl, notification: El } = App$1.useApp(), { historiaPregressaLoading: Cl, historiaPregressaError: wl, patientDisplayLine: Tl, retryHistoriaPregressa: _l } = useVoaEditorContext(), [Ml, Al] = reactExports.useState(!1), Rl = reactExports.useCallback(async () => {
+  const { modal: Sl, notification: El } = App$1.useApp(), Cl = useVoaEditorContextOptional(), wl = (Cl == null ? void 0 : Cl.historiaPregressaLoading) ?? !1, Tl = (Cl == null ? void 0 : Cl.historiaPregressaError) ?? !1, _l = (Cl == null ? void 0 : Cl.patientDisplayLine) ?? null, Ml = (Cl == null ? void 0 : Cl.retryHistoriaPregressa) ?? (async () => {
+  }), [Al, Rl] = reactExports.useState(!1), Pl = reactExports.useCallback(async () => {
     try {
-      await _l();
+      await Ml();
     } catch {
       El.error(historiaPregressaGenerationErrorNotification);
     }
-  }, [_l, El]), Pl = reactExports.useCallback(() => {
-    !Cl && !wl && Al(!0);
-  }, [Cl, wl]), Il = reactExports.useCallback(() => Al(!1), []), Ol = reactExports.useCallback(() => {
-    Cl || Sl.confirm({
+  }, [Ml, El]), Il = reactExports.useCallback(() => {
+    !wl && !Tl && Rl(!0);
+  }, [wl, Tl]), Ol = reactExports.useCallback(() => Rl(!1), []), Dl = reactExports.useCallback(() => {
+    wl || Sl.confirm({
       centered: !0,
       title: "Remover História Pregressa",
       content: "Tem certeza que deseja remover o bloco de História Pregressa do documento?",
@@ -175641,24 +175646,24 @@ const historiaLoadingLead = /* @__PURE__ */ jsxRuntimeExports.jsx(Flex, { align:
       icon: null,
       onOk: () => Promise.resolve(yl())
     });
-  }, [Sl, yl, Cl]), Dl = historiaStatusConfig.uploading, Ll = historiaStatusConfig.success, Bl = historiaStatusConfig.error, Fl = (Tl == null ? void 0 : Tl.trim()) || SUBTITLE_FALLBACK;
-  return Cl ? /* @__PURE__ */ jsxRuntimeExports.jsx(VoaNodeCard, { selected: ys, wrapperClassName: "historia-pregressa-component", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { align: "center", gap: 12, children: [
+  }, [Sl, yl, wl]), Ll = historiaStatusConfig.uploading, Bl = historiaStatusConfig.success, Fl = historiaStatusConfig.error, zl = (_l == null ? void 0 : _l.trim()) || SUBTITLE_FALLBACK;
+  return wl ? /* @__PURE__ */ jsxRuntimeExports.jsx(VoaNodeCard, { selected: ys, wrapperClassName: "historia-pregressa-component", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { align: "center", gap: 12, children: [
     historiaLoadingLead,
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { vertical: !0, flex: 1, style: { minWidth: 0 }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { strong: !0, ellipsis: { tooltip: "História Pregressa" }, style: { maxWidth: "100%" }, children: "História Pregressa" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12 }, ellipsis: { tooltip: SUBTITLE_LOADING }, children: SUBTITLE_LOADING })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Dl.icon, color: Dl.color, style: { flexShrink: 0 }, children: Dl.label })
-  ] }) }) : wl ? /* @__PURE__ */ jsxRuntimeExports.jsx(VoaNodeCard, { selected: ys, wrapperClassName: "historia-pregressa-component", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { align: "center", gap: 12, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Ll.icon, color: Ll.color, style: { flexShrink: 0 }, children: Ll.label })
+  ] }) }) : Tl ? /* @__PURE__ */ jsxRuntimeExports.jsx(VoaNodeCard, { selected: ys, wrapperClassName: "historia-pregressa-component", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { align: "center", gap: 12, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(HistoriaIcon, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { vertical: !0, flex: 1, style: { minWidth: 0 }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { strong: !0, ellipsis: { tooltip: "História Pregressa" }, style: { maxWidth: "100%" }, children: "História Pregressa" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12 }, ellipsis: { tooltip: "Falha ao gerar o conteúdo" }, children: "Falha ao gerar o conteúdo" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { gap: 8, align: "center", style: { flexShrink: 0 }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Bl.icon, color: Bl.color, children: Bl.label }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "default", size: "small", onClick: () => void Rl(), children: "Tentar novamente" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Remover história pregressa", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", danger: !0, size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$V, {}), onClick: Ol }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Fl.icon, color: Fl.color, children: Fl.label }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "default", size: "small", onClick: () => void Pl(), children: "Tentar novamente" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Remover história pregressa", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", danger: !0, size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$V, {}), onClick: Dl }) })
     ] })
   ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
     VoaNodeCard,
@@ -175668,17 +175673,17 @@ const historiaLoadingLead = /* @__PURE__ */ jsxRuntimeExports.jsx(Flex, { align:
       modal: /* @__PURE__ */ jsxRuntimeExports.jsx(
         IsolatedModal,
         {
-          open: Ml,
-          onClose: Il,
+          open: Al,
+          onClose: Ol,
           title: /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { align: "center", gap: 10, style: { paddingRight: 24 }, contentEditable: !1, children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(HistoriaIcon, {}),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { vertical: !0, style: { minWidth: 0 }, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { strong: !0, ellipsis: { tooltip: "História Pregressa" }, style: { maxWidth: "100%", lineHeight: "20px" }, children: "História Pregressa" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12, lineHeight: "18px" }, ellipsis: { tooltip: Fl }, children: Fl })
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12, lineHeight: "18px" }, ellipsis: { tooltip: zl }, children: zl })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Ll.icon, color: Ll.color, style: { marginLeft: 4, flexShrink: 0 }, children: Ll.label })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Bl.icon, color: Bl.color, style: { marginLeft: 4, flexShrink: 0 }, children: Bl.label })
           ] }),
-          footer: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { contentEditable: !1, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { contentEditable: !1, type: "primary", onClick: Il, children: "Fechar" }) }),
+          footer: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { contentEditable: !1, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { contentEditable: !1, type: "primary", onClick: Ol, children: "Fechar" }) }),
           editor: $l,
           getPos: xl
         }
@@ -175687,12 +175692,12 @@ const historiaLoadingLead = /* @__PURE__ */ jsxRuntimeExports.jsx(Flex, { align:
         /* @__PURE__ */ jsxRuntimeExports.jsx(HistoriaIcon, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { vertical: !0, flex: 1, style: { minWidth: 0 }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { strong: !0, ellipsis: { tooltip: "História Pregressa" }, style: { maxWidth: "100%" }, children: "História Pregressa" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12 }, ellipsis: { tooltip: Fl }, children: Fl })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Text$1, { type: "secondary", style: { fontSize: 12 }, ellipsis: { tooltip: zl }, children: zl })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Flex, { gap: 8, align: "center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Ll.icon, color: Ll.color, children: Ll.label }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Visualizar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$X, {}), onClick: Pl }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Remover história pregressa", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", danger: !0, size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$V, {}), onClick: Ol }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Tag, { icon: Bl.icon, color: Bl.color, children: Bl.label }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Visualizar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$X, {}), onClick: Il }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { title: "Remover história pregressa", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button$1, { type: "text", danger: !0, size: "small", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(RefIcon$V, {}), onClick: Dl }) })
         ] })
       ] })
     }
@@ -186581,15 +186586,22 @@ function usePluginCurrentUser() {
   });
   return reactExports.useMemo(() => ys ? { name: ys.name, email: ys.email, avatarUrl: ys.image, specialty: ys.specialty } : null, [ys]);
 }
+function getPluginModalContainer() {
+  const ys = document.querySelector("voa-plugin"), yl = (ys == null ? void 0 : ys.shadowRoot) ?? document.body, $l = yl.querySelector("[data-voa-modal-portal]");
+  if ($l) return $l;
+  const xl = document.createElement("div");
+  return xl.setAttribute("data-voa-modal-portal", ""), xl.style.position = "absolute", yl.appendChild(xl), xl;
+}
 let configured = !1;
 function configurePluginModelSelection() {
   configured || (configured = !0, configureModelSelection({
     useDefaultTemplate: usePluginDefaultTemplate,
     useEhrUsedTemplateIds: usePluginEhrUsedTemplateIds,
     useCurrentUser: usePluginCurrentUser,
-    voaLogoSrc: logo
+    voaLogoSrc: logo,
     // No explicit zIndex: inherit the plugin ThemeProvider's zIndexPopupBase (1_010_000)
     // so the modal renders above the plugin's themeRootWrapper stacking context (1_000_000).
+    getContainer: getPluginModalContainer
   }));
 }
 configurePluginModelSelection();
