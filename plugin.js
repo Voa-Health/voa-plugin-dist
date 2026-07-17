@@ -71819,7 +71819,7 @@ const persistDoctorExchangeResponse = (ys) => {
 };
 async function persistBearerAuthForExtensionRuntime(ys) {
 }
-const appVersion = "2.5.0", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (ys) => {
+const appVersion = "2.5.1", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (ys) => {
   ys && (apiInstance.defaults.headers.common["x-vercel-protection-bypass"] = ys, authInstance.defaults.headers.common["x-vercel-protection-bypass"] = ys, apiInstance.defaults.params = { ...apiInstance.defaults.params, "x-vercel-protection-bypass": ys }, authInstance.defaults.params = { ...authInstance.defaults.params, "x-vercel-protection-bypass": ys });
 }, logout = async () => {
   clearDoctorExchangeResponse(), useAuthStore.getState().reset();
@@ -188888,7 +188888,19 @@ const useContextCollapseStore = create$a((ys) => ({
   reset: () => {
     initialState$2.completedTours = getCompletedToursFromStorage(), ys(initialState$2);
   }
-})), CollapseWithContextAndTranscriptions = ({
+})), contextEditorFillInjectedRoots = /* @__PURE__ */ new WeakSet(), CONTEXT_EDITOR_FILL_STYLES = `
+.ehr-context-panel .ehr-file-uploader,
+.ehr-context-panel .ehr-file-uploader-scroll-container { flex: 1 1 auto !important; min-height: 0 !important; }
+.ehr-context-panel .ProseMirror { flex: 1 0 auto; min-height: 0; }
+`;
+function injectContextEditorFillStyles(ys) {
+  if (!ys || typeof document > "u") return;
+  const yl = ys.getRootNode();
+  if (contextEditorFillInjectedRoots.has(yl)) return;
+  const xl = document.createElement("style");
+  xl.textContent = CONTEXT_EDITOR_FILL_STYLES, yl instanceof ShadowRoot ? yl.appendChild(xl) : yl.head.appendChild(xl), contextEditorFillInjectedRoots.add(yl);
+}
+const CollapseWithContextAndTranscriptions = ({
   ehrId: ys,
   ehrPatient: yl,
   sharedDoc: xl,
@@ -189106,7 +189118,11 @@ const useContextCollapseStore = create$a((ys) => ({
         Cu = Ru, du(Ru);
       }
     };
-  }, []), Su = isVoaPatientsEnabled(), wu = !!yl, Mu = (yl == null ? void 0 : yl.id) ?? null, Au = reactExports.useCallback(() => {
+  }, []);
+  reactExports.useEffect(() => {
+    _c && injectContextEditorFillStyles(_c.view.dom);
+  }, [_c]);
+  const Su = isVoaPatientsEnabled(), wu = !!yl, Mu = (yl == null ? void 0 : yl.id) ?? null, Au = reactExports.useCallback(() => {
     Yl.setScreenUploadFiles(DocumentUploadState.info);
   }, [Yl.setScreenUploadFiles]), { requestHistoriaFromPlaceholder: Tu, historiaPregressaLoading: Iu } = useHistoriaPregressaAdditionalInfo({
     editor: _c,
@@ -189220,6 +189236,7 @@ const useContextCollapseStore = create$a((ys) => ({
                       streaming: wl,
                       isClientSide: !1,
                       editorRef: xu,
+                      style: { flex: 1, minHeight: 0, display: "flex", flexDirection: "column" },
                       extensions: TiptapExtensions([
                         PlaceholderExt({
                           text: Hl,
@@ -192620,7 +192637,14 @@ const useLocalDefaultTemplateStore = create$a((ys) => ({
   save: (yl, xl) => {
     yl && (writeLocal(yl, xl), ys({ key: yl, value: xl }));
   }
-})), USER_DATA_QK = ["getUserdata"];
+}));
+function getPluginModalContainer() {
+  const ys = document.querySelector("voa-plugin"), yl = (ys == null ? void 0 : ys.shadowRoot) ?? document.body, xl = yl.querySelector("[data-voa-modal-portal]");
+  if (xl) return xl;
+  const $l = document.createElement("div");
+  return $l.setAttribute("data-voa-modal-portal", ""), $l.style.position = "absolute", yl.appendChild($l), $l;
+}
+const USER_DATA_QK = ["getUserdata"];
 function usePluginDefaultTemplate() {
   const ys = useQueryClient(), yl = useAuthStore((Pl) => Pl.authType), xl = useGlobalParamsStore((Pl) => Pl.doctorId) ?? null, $l = yl === cAuthTypes.API_KEY, { data: Sl } = useQuery({
     queryKey: USER_DATA_QK,
@@ -192660,12 +192684,6 @@ function usePluginCurrentUser() {
     enabled: !0
   });
   return reactExports.useMemo(() => ys ? { name: ys.name, email: ys.email, avatarUrl: ys.image, specialty: ys.specialty } : null, [ys]);
-}
-function getPluginModalContainer() {
-  const ys = document.querySelector("voa-plugin"), yl = (ys == null ? void 0 : ys.shadowRoot) ?? document.body, xl = yl.querySelector("[data-voa-modal-portal]");
-  if (xl) return xl;
-  const $l = document.createElement("div");
-  return $l.setAttribute("data-voa-modal-portal", ""), $l.style.position = "absolute", yl.appendChild($l), $l;
 }
 let configured = !1;
 function configurePluginModelSelection() {
