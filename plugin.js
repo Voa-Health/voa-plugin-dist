@@ -74789,7 +74789,7 @@ const persistDoctorExchangeResponse = (an) => {
 };
 async function persistBearerAuthForExtensionRuntime(an) {
 }
-const appVersion = "2.6.0", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (an) => {
+const appVersion = "2.6.1", appName = "voa-script", headersXVoaApp = { "x-voa-app": `${appName}/${appVersion}` }, BASE_API_URL = "https://integration.voa.health", apiInstance = axios.create({ baseURL: BASE_API_URL + "/api/v1", headers: headersXVoaApp }), authInstance = axios.create({ baseURL: BASE_API_URL + "/auth", headers: headersXVoaApp }), setVercelProtectionBypass = (an) => {
   an && (apiInstance.defaults.headers.common["x-vercel-protection-bypass"] = an, authInstance.defaults.headers.common["x-vercel-protection-bypass"] = an, apiInstance.defaults.params = { ...apiInstance.defaults.params, "x-vercel-protection-bypass": an }, authInstance.defaults.params = { ...authInstance.defaults.params, "x-vercel-protection-bypass": an });
 };
 let sessionTokenProvider = null, sessionAuthGeneration = 0, inFlightProviderRefresh = null;
@@ -91993,6 +91993,10 @@ function Fireworks(an) {
 var _default$1 = fireworks$1.default = Fireworks;
 const ConditionalFireworks = reactExports.forwardRef(({ disabled: an = !1 }, ln) => an ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { ref: ln, style: { display: "none" } }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { ref: ln, children: /* @__PURE__ */ jsxRuntimeExports.jsx(_default$1, { autorun: { speed: 3, duration: 3e3 } }) }));
 ConditionalFireworks.displayName = "ConditionalFireworks";
+function salaDoAtendimento(an, ln) {
+  const dn = (ln ?? "").trim();
+  return dn.length > 0 ? dn : an;
+}
 function cpfMask(an) {
   return an ? (an = an.replace(/\D/g, ""), an = an.replace(/(\d{3})(\d)/, "$1.$2"), an = an.replace(/(\d{3})(\d)/, "$1.$2"), an = an.replace(/(\d{3})(\d{1,2})$/, "$1-$2"), an) : "";
 }
@@ -92328,6 +92332,17 @@ const parseJwtPayload$1 = (an) => {
   if (!En)
     throw new Error("Failed to start recording");
   return En;
+}, askForMicrophoneWithFallback = async (an, ln = !0) => {
+  try {
+    return { stream: await askForMicrophone(an, ln), usedFallback: !1 };
+  } catch (dn) {
+    console.warn("Failed to ask for microphone, using default:", { inputDeviceId: an }, dn);
+    try {
+      return { stream: await askForMicrophone(void 0, ln), usedFallback: !0 };
+    } catch (En) {
+      throw console.error("Fallback microphone request also failed:", En), En;
+    }
+  }
 }, askForScreenSharing = async ({
   onEnded: an
 }) => {
@@ -172635,21 +172650,17 @@ const WORKLET_NAME = "voa-worklet-processor", createWorkletRecorderSlice = (an, 
   }, Pl = async (Il) => {
     if (!dn || !En)
       throw new Error("Failed to request microphone and connect");
-    let Ol;
-    try {
-      Ol = await askForMicrophone(Il, !0);
-    } catch (Ll) {
-      console.warn(`Failed to ask for microphone ${Il}, using default:`, Ll), Ol = await askForMicrophone(void 0), staticMethods.warning({
-        message: "Não foi possível iniciar a gravação com o microfone selecionado",
-        description: "Agora o sistema está usando o microfone padrão. Confira se o áudio está sendo captado corretamente ou selecione outro microfone."
-      });
-    }
-    const Dl = Ol.getAudioTracks()[0];
-    return Dl && (xl = () => {
+    const { stream: Ol, usedFallback: Dl } = await askForMicrophoneWithFallback(Il, !0);
+    Dl && staticMethods.warning({
+      message: "Não foi possível iniciar a gravação com o microfone selecionado",
+      description: "Agora o sistema está usando o microfone padrão. Confira se o áudio está sendo captado corretamente ou selecione outro microfone."
+    });
+    const Ll = Ol.getAudioTracks()[0];
+    return Ll && (xl = () => {
       if (ln().recorderStatus !== RecorderStatusValues.Recording) return;
-      const Ll = Dl.getSettings().deviceId;
-      ln().switchMicrophoneDuringRecording(Ll).catch((Fl) => console.error("Failed to recover microphone after track ended:", Fl));
-    }, Dl.addEventListener("ended", xl)), yl = dn.createMediaStreamSource(Ol), yl.connect(En), an({
+      const Fl = Ll.getSettings().deviceId;
+      ln().switchMicrophoneDuringRecording(Fl).catch((Hl) => console.error("Failed to recover microphone after track ended:", Hl));
+    }, Ll.addEventListener("ended", xl)), yl = dn.createMediaStreamSource(Ol), yl.connect(En), an({
       micMediaStream: Ol,
       micAnalyser: createAudioAnalyser(dn, yl)
     }), Ol;
@@ -182315,52 +182326,53 @@ const LiveblocksErrorBoundary = (an) => {
   return ln = ln.replace(/^[^\p{L}\p{N}]+/u, ""), ln ? { start_time: dn, text: ln } : null;
 }, STREAMING_CHUNK_DURATION_IN_MS = 250, BATCH_CHUNK_DURATION_IN_MS = 3e4, EditorProvider = ({
   ehrId: an,
-  authEndpoint: ln,
-  liveblocksErrorFallback: dn,
-  children: En,
-  onWebSocketTrackEvent: yl,
-  skipLiveblocksProvider: $l,
-  ...xl
+  roomId: ln,
+  authEndpoint: dn,
+  liveblocksErrorFallback: En,
+  children: yl,
+  onWebSocketTrackEvent: $l,
+  skipLiveblocksProvider: xl,
+  ...Sl
 }) => {
-  const [Sl, El] = reactExports.useState(xl.enableStreaming), Cl = reactExports.useRef(!1), wl = useAudioRecorderStore((Pl) => Pl.setRecorderOptions), Tl = reactExports.useCallback(
-    (Pl) => {
-      Cl.current = !0, El(!1), yl && yl({
+  const [El, Cl] = reactExports.useState(Sl.enableStreaming), wl = reactExports.useRef(!1), Tl = useAudioRecorderStore((Ol) => Ol.setRecorderOptions), _l = reactExports.useCallback(
+    (Ol) => {
+      wl.current = !0, Cl(!1), $l && $l({
         event: "WebSocket_Fallback_Activated",
-        properties: { reason: Pl }
+        properties: { reason: Ol }
       });
     },
-    [El, yl]
+    [Cl, $l]
   );
   reactExports.useEffect(() => {
-    xl.enableStreaming !== Sl && !Cl.current && El(xl.enableStreaming);
-  }, [xl.enableStreaming, Sl]), reactExports.useEffect(() => {
-    wl({ chunksDuration: Sl ? STREAMING_CHUNK_DURATION_IN_MS : BATCH_CHUNK_DURATION_IN_MS });
-  }, [Sl, wl]);
-  const { connectionStatus: _l, joinEhrRoom: Ml, leaveEhrRoom: Al } = useWebSocketStore(
-    useShallow((Pl) => ({
-      connectionStatus: Pl.connectionStatus,
-      joinEhrRoom: Pl.joinEhrRoom,
-      leaveEhrRoom: Pl.leaveEhrRoom
+    Sl.enableStreaming !== El && !wl.current && Cl(Sl.enableStreaming);
+  }, [Sl.enableStreaming, El]), reactExports.useEffect(() => {
+    Tl({ chunksDuration: El ? STREAMING_CHUNK_DURATION_IN_MS : BATCH_CHUNK_DURATION_IN_MS });
+  }, [El, Tl]);
+  const { connectionStatus: Ml, joinEhrRoom: Al, leaveEhrRoom: Rl } = useWebSocketStore(
+    useShallow((Ol) => ({
+      connectionStatus: Ol.connectionStatus,
+      joinEhrRoom: Ol.joinEhrRoom,
+      leaveEhrRoom: Ol.leaveEhrRoom
     }))
   );
   reactExports.useEffect(() => {
-    if (_l === ConnectionStatus.OPEN)
-      return Ml(an), () => {
-        Al();
+    if (Ml === ConnectionStatus.OPEN)
+      return Al(an), () => {
+        Rl();
       };
-  }, [_l, an, Ml, Al]);
-  const Rl = /* @__PURE__ */ jsxRuntimeExports.jsx(_RoomProvider, { id: an, initialPresence: { isRecording: !1 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(LiveblocksErrorBoundary, { fallback: dn, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ClientSideSuspense, { fallback: xl.fallback, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TranscriptionProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  }, [Ml, an, Al, Rl]);
+  const Pl = ln, Il = /* @__PURE__ */ jsxRuntimeExports.jsx(_RoomProvider, { id: Pl, initialPresence: { isRecording: !1 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(LiveblocksErrorBoundary, { fallback: En, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ClientSideSuspense, { fallback: Sl.fallback, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TranscriptionProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     AudioProcessorProvider,
     {
       ehrId: an,
-      ...xl,
-      activateStreamingFallback: Tl,
-      enableStreaming: Sl,
-      onTrackEvent: yl,
-      children: En
+      ...Sl,
+      activateStreamingFallback: _l,
+      enableStreaming: El,
+      onTrackEvent: $l,
+      children: yl
     }
-  ) }) }) }) }, an);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(EditorContext.Provider, { value: {}, children: $l ? Rl : /* @__PURE__ */ jsxRuntimeExports.jsx(LiveblocksProvider, { authEndpoint: ln, children: Rl }) });
+  ) }) }) }) }, Pl);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(EditorContext.Provider, { value: {}, children: xl ? Il : /* @__PURE__ */ jsxRuntimeExports.jsx(LiveblocksProvider, { authEndpoint: dn, children: Il }) });
 };
 reactExports.createContext(null);
 reactExports.createContext(null);
@@ -196793,10 +196805,11 @@ const RecorderControls = ({ ehrId: an, createDocumentHandler: ln, recorderContro
     }),
     []
   );
-  return ln && $l && wl && En ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return ln && $l && xl && wl && En ? /* @__PURE__ */ jsxRuntimeExports.jsx(
     EditorProvider,
     {
       ehrId: ln,
+      roomId: salaDoAtendimento(ln, xl.room),
       authEndpoint: _l,
       audioUploadEndpoint: Ml,
       access_token: En,
@@ -197048,7 +197061,7 @@ const SOFT_GENERATION_ERROR_NAMES = /* @__PURE__ */ new Set(["EHR__INSUFFICIENT_
     if (_u.length)
       return _u[0].addEventListener("ended", Au), () => _u[0].removeEventListener("ended", Au);
   }, [Al]), reactExports.useEffect(() => {
-    uu && (uu.document_set.length > 1 || uu.duration_in_seconds || Tl((Ml == null ? void 0 : Ml.id) ?? "default"));
+    uu && (uu.document_set.length > 1 || uu.duration_in_seconds || Tl((Ml == null ? void 0 : Ml.id) ?? "default").catch((_u) => console.error("Failed to auto-start recording:", _u)));
   }, [uu]), reactExports.useEffect(() => {
     if (!uu) return;
     const _u = uu.duration_in_seconds ?? 0, { recorderStatus: Du, timer: Uu, setTimer: Nu } = useAudioRecorderStore.getState();
